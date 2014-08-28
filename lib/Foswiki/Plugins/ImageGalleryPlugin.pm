@@ -1,5 +1,5 @@
 # Copyright (C) 2002-2009 Will Norris. All Rights Reserved. (wbniv@saneasylumstudios.com)
-# Copyright (C) 2005-2011 Michael Daum http://michaeldaumconsulting.com
+# Copyright (C) 2005-2014 Michael Daum http://michaeldaumconsulting.com
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -15,10 +15,11 @@
 # =========================
 package Foswiki::Plugins::ImageGalleryPlugin;
 use strict;
+use warnings;
 
 # =========================
-our $VERSION = '6.11';
-our $RELEASE = '6.11';
+our $VERSION = '6.20';
+our $RELEASE = '6.20';
 our $NO_PREFS_IN_TOPIC = 1;
 our $SHORTDESCRIPTION = 'Displays image gallery with auto-generated thumbnails from attachments';
 our $isInitialized;

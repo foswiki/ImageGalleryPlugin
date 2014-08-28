@@ -1,7 +1,7 @@
 # Plugin for Foswiki - The Free and Open Source Wiki, http://foswiki.org/
 #
 # Copyright (C) 2002-2009 Will Norris. All Rights Reserved. (wbniv@saneasylumstudios.com)
-# Copyright (C) 2005-2011 Michael Daum http://michaeldaumconsulting.com
+# Copyright (C) 2005-2014 Michael Daum http://michaeldaumconsulting.com
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -18,10 +18,12 @@
 package Foswiki::Plugins::ImageGalleryPlugin::Core;
 
 use strict;
+use warnings;
+
 use Foswiki::Func ();
 use Foswiki::Plugins ();
-use constant DEBUG => 0; # toggle me
-use vars qw(%imageSuffixes);
+use constant TRACE => 0; # toggle me
+our %imageSuffixes;
 
 # =========================
 # constructor
@@ -889,7 +891,10 @@ sub processImage {
 
   # read
   #writeDebug("mage->read($image->{IGP_filename})");
-  my $error = $this->{mage}->Read($image->{IGP_filename});
+  my $source = $image->{IGP_filename};
+  $source .= '[0]' if $source =~ /\.gif$/i; # extract the first frame only
+
+  my $error = $this->{mage}->Read($source);
   #writeDebug("done read");
   if ($error =~ /(\d+)/) {
     #writeDebug("Read(): error=$error");
@@ -911,6 +916,22 @@ sub processImage {
     #writeDebug("Transform(): error=$error");
     $this->{errorMsg} .= " $error";
     return 0 if $1 >= 400;
+  }
+
+  # auto orient
+  $error = $this->{mage}->AutoOrient();
+  if ($error =~ /(\d+)/) {
+    $this->{errorMsg} = $error;
+    writeDebug("Error: $error");
+    return undef if $1 >= 400;
+  }
+
+  # strip of profiles and comments
+  $error = $this->{mage}->Strip();
+  if ($error =~ /(\d+)/) {
+    $this->{errorMsg} = $error;
+    writeDebug("Error: $error");
+    return undef if $1 >= 400;
   }
 
   # write
@@ -1078,7 +1099,7 @@ sub writeInfo {
 # static
 sub writeDebug {
   #Foswiki::Func::writeDebug("ImageGalleryPlugin - $_[0]");
-  print STDERR "ImageGalleryPlugin - $_[0]\n" if DEBUG;
+  print STDERR "ImageGalleryPlugin - $_[0]\n" if TRACE;
 }
 
 1;
