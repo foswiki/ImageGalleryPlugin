@@ -216,7 +216,7 @@ sub init {
   }
 
   $this->{sort} = $params->{sort} || 'name';
-  $this->{sort} = 'date' unless $this->{sort} =~ /^date|name|comment|size$/;
+  $this->{sort} = 'date' unless $this->{sort} =~ /^date|name|comment|size|topic$/;
 
   $this->{reverse} = $params->{rev} || $params->{reverse} || 'off';
   $this->{reverse} = 'off' unless $this->{reverse} =~ /^on|off$/;
@@ -670,6 +670,8 @@ sub getImages {
     @images = sort {lc($a->{comment}) cmp lc($b->{comment})} @images;
   } elsif ($this->{sort} eq 'size') {
     @images = sort {$a->{size} <=> $b->{size}} @images;
+  } elsif ($this->{sort} eq 'topic') {
+    @images = sort {lc($a->{IGP_topic}) cmp lc($b->{IGP_topic})} @images;
   }
   @images = reverse @images if $this->{reverse} eq 'on';
 
