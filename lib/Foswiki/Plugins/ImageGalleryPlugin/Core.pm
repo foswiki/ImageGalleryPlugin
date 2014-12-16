@@ -194,9 +194,6 @@ sub init {
     $this->{doThumbTitles} = $this->{doTitles};
   }
 
-  $this->{listsvg} = $params->{listsvg} || 'off';
-  $this->{listsvg} = ($this->{listsvg} eq 'on')?1:0;
-
   $this->{warn} = $params->{warn};
   $this->{warn} = 'no images found' unless defined $this->{warn};
   $this->{warn} = '' if $this->{warn} eq 'off';
@@ -253,10 +250,7 @@ sub render {
     next if $found;
     my $img = "$this->{igpDir}/$entry->{name}";
     my $thumb = "$this->{igpDir}/thumb_$entry->{name}";
-    if ($entry->{name} =~ /\.svgz?$/) {
-      $img .= 'png'; 
-      $thumb .= 'png'; 
-    }
+    $entry->{name} =~ s/\.svgz?|tiff?|xcf|psd$/.png/i;
 
     $img = $this->normalizeFileName($img);
     $thumb = $this->normalizeFileName($thumb);
@@ -561,7 +555,6 @@ sub renderThumbnails {
       . "?id=$this->{id}&filename=$image->{name}#igp$this->{id}' "
       . ">"
       . "<img src='$this->{imagesPubUrl}/thumb_$image->{name}"
-      . (($image->{name} =~ /\.svgz?$/ )?'.png':'')
       . "' title='$image->{IGP_comment}' alt='$image->{name}'/></a></td></tr>";
 
     if ($this->{doThumbTitles}) {
@@ -627,9 +620,6 @@ sub getImages {
       next if $this->{exclude} && $image->{$this->{field}} =~ /$this->{exclude}/;
       next if $this->{include} && $image->{$this->{field}} !~ /$this->{include}/;
       
-      # SMELL work around for Image::Magick segfaulting reading svg image files
-      next if !$this->{listsvg} && $image->{name} =~ /svgz?$/i;
-
       my $size = $image->{size} || 0;
       $image->{IGP_comment} = getImageTitle($image);
       $image->{IGP_sizeK} = sprintf("%dk", $size / 1024);
@@ -730,22 +720,25 @@ sub computeImageSize {
   if (!$this->{doRefresh} && $entry) {
     
     # look up igp info
-    #writeDebug("found cached info");
+    writeDebug("found cached info");
     $image->{IGP_origwidth} = $entry->{origwidth};
     $image->{IGP_origheight} = $entry->{origheight};
     
   } else {
     
     # compute
-    #writeDebug("consulting image mage on $image->{IGP_filename}");
+    writeDebug("consulting image mage on $image->{IGP_filename}");
     ($image->{IGP_origwidth}, $image->{IGP_origheight}, undef, undef) = 
       $this->{mage}->Ping($image->{IGP_filename});
+
+    $image->{IGP_origwidth} ||= $this->{thumbwidth};
+    $image->{IGP_origheight} ||= $this->{thumbheight};
 
     # forget
     my $mage = $this->{mage};
     @$mage = ();
 
-    #writeDebug("done");
+    writeDebug("done");
   }
     
   # compute max image width and height
@@ -833,7 +826,8 @@ sub replaceVars {
 
   if ($image) {
 
-    my $imageName = $image->{name}.(($image->{name} =~ /\.svgz?$/ )?'.png':'');
+    my $imageName = $image->{name};
+    $imageName =~ s/\.svgz?|tiff?|xcf|psd$/.png/i;
 
     $format =~ s/\$width/$image->{IGP_width}/gos;
     $format =~ s/\$framewidth/($image->{IGP_width}+2)/ge;
@@ -880,8 +874,8 @@ sub processImage {
   
   my $prefix = ($thumbMode)?'thumb_':'';
 
-  my $target = "$this->{igpDir}/$prefix$image->{name}".
-               (($image->{name} =~ /\.svgz?$/)?'.png':'');
+  my $target = "$this->{igpDir}/$prefix$image->{name}";
+  $target =~ s/\.svgz?|tiff?|xcf|psd$/.png/i;
   $target = $this->normalizeFileName($target);
 
   my $entry = $this->{info}{$image->{name}};

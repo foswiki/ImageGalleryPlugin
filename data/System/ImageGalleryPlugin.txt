@@ -1,4 +1,4 @@
-%META:TOPICINFO{author="ProjectContributor" date="1252914561" format="1.1" version="1"}%
+%META:TOPICINFO{author="ProjectContributor" date="1418736031" format="1.1" version="1"}%
 ---+!! <nop>ImageGalleryPlugin
 %TOC%
 
@@ -158,6 +158,7 @@ Note, that the $comment variable will only display =&lt;comment&gt;= , that is w
 |  Release: | %$RELEASE% |
 |  Version: | %$VERSION% |
 |  Change History: | <!-- versions below in reverse order -->&nbsp; |
+|  16 Dec 2014 | add support for svg, tiff, xcf and psd |
 |  28 Aug 2014 | only render the first frame of a gif animation generating thumbnails; fix orientation of thumbnail as specified in the EXIF metadata |
 |  29 Nov 2012 | removed useless call to =expandCommonVariables=; removed non-functional <nop>UserListByPhotograph |
 |  06 Jun 2011 | added support for Foswiki:Extensions/LazyLoadPlugin and Foswiki:Extensions/JQPrettyPhotoContrib; \
@@ -208,6 +209,6 @@ Note, that the $comment variable will only display =&lt;comment&gt;= , that is w
 |  Support: | Foswiki:Support/%TOPIC% |
 
 
-%META:FILEATTACHMENT{name="wintermountains.jpg" attachment="wintermountains.jpg" attr="" date="1234443485" size="33553" stream="IO::File=GLOB(0x9825730)" tmpFilename="/var/tmp/CGItemp48379" user="ProjectContributor" version="1"}%
-%META:FILEATTACHMENT{name="wave.jpg" attachment="wave.jpg" attr="" date="1234443495" size="17585" stream="IO::File=GLOB(0x981a770)" tmpFilename="/var/tmp/CGItemp54049" user="ProjectContributor" version="1"}%
-%META:FILEATTACHMENT{name="cascade.jpg" attachment="cascade.jpg" attr="" date="1234443503" size="31390" stream="IO::File=GLOB(0x9819a0c)" tmpFilename="/var/tmp/CGItemp56780" user="ProjectContributor" version="1"}%
+%META:FILEATTACHMENT{name="wintermountains.jpg" attachment="wintermountains.jpg" attr="" date="1418736031" size="33553" stream="IO::File=GLOB(0x9825730)" tmpFilename="/var/tmp/CGItemp48379" user="ProjectContributor" version="1"}%
+%META:FILEATTACHMENT{name="wave.jpg" attachment="wave.jpg" attr="" date="1418736031" size="17585" stream="IO::File=GLOB(0x981a770)" tmpFilename="/var/tmp/CGItemp54049" user="ProjectContributor" version="1"}%
+%META:FILEATTACHMENT{name="cascade.jpg" attachment="cascade.jpg" attr="" date="1418736031" size="31390" stream="IO::File=GLOB(0x9819a0c)" tmpFilename="/var/tmp/CGItemp56780" user="ProjectContributor" version="1"}%

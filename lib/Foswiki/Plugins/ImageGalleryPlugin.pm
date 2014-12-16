@@ -18,8 +18,8 @@ use strict;
 use warnings;
 
 # =========================
-our $VERSION = '6.20';
-our $RELEASE = '6.20';
+our $VERSION = '7.00';
+our $RELEASE = '7.00';
 our $NO_PREFS_IN_TOPIC = 1;
 our $SHORTDESCRIPTION = 'Displays image gallery with auto-generated thumbnails from attachments';
 our $isInitialized;

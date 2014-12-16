@@ -1,4 +1,4 @@
-%META:TOPICINFO{author="ProjectContributor" date="1180825069" format="1.0" version="1.1"}%
+%META:TOPICINFO{author="ProjectContributor" date="1418736031" format="1.0" version="1"}%
 %META:TOPICPARENT{name="Macros"}%
 #VarNRIMAGES
 ---+++ NRIMAGES{"topic"} -- returns the number of images attachted to a (list of) topics
