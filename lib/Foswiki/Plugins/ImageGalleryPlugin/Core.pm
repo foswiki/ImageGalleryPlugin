@@ -250,7 +250,7 @@ sub render {
     next if $found;
     my $img = "$this->{igpDir}/$entry->{name}";
     my $thumb = "$this->{igpDir}/thumb_$entry->{name}";
-    $entry->{name} =~ s/\.svgz?|tiff?|xcf|psd$/.png/i;
+    $entry->{name} =~ s/\.(svgz?|tiff?|xcf|psd)$/.png/i;
 
     $img = $this->normalizeFileName($img);
     $thumb = $this->normalizeFileName($thumb);
@@ -827,7 +827,7 @@ sub replaceVars {
   if ($image) {
 
     my $imageName = $image->{name};
-    $imageName =~ s/\.svgz?|tiff?|xcf|psd$/.png/i;
+    $imageName =~ s/\.(svgz?|tiff?|xcf|psd)$/.png/i;
 
     $format =~ s/\$width/$image->{IGP_width}/gos;
     $format =~ s/\$framewidth/($image->{IGP_width}+2)/ge;
@@ -875,7 +875,7 @@ sub processImage {
   my $prefix = ($thumbMode)?'thumb_':'';
 
   my $target = "$this->{igpDir}/$prefix$image->{name}";
-  $target =~ s/\.svgz?|tiff?|xcf|psd$/.png/i;
+  $target =~ s/\.(svgz?|tiff?|xcf|psd)$/.png/i;
   $target = $this->normalizeFileName($target);
 
   my $entry = $this->{info}{$image->{name}};

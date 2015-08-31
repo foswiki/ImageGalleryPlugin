@@ -1,5 +1,6 @@
 *.gz
 *.swp
+igp_*
 pub/System/ImageGalleryPlugin/style.css
 ImageGalleryPlugin.md5
 ImageGalleryPlugin.sha1

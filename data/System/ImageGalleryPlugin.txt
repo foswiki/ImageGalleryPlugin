@@ -158,6 +158,7 @@ Note, that the $comment variable will only display =&lt;comment&gt;= , that is w
 |  Release: | %$RELEASE% |
 |  Version: | %$VERSION% |
 |  Change History: | <!-- versions below in reverse order -->&nbsp; |
+|  31 Aug 2015: | fixing deprecated unescaped left brace in regexes |
 |  16 Dec 2014 | add support for svg, tiff, xcf and psd |
 |  28 Aug 2014 | only render the first frame of a gif animation generating thumbnails; fix orientation of thumbnail as specified in the EXIF metadata |
 |  29 Nov 2012 | removed useless call to =expandCommonVariables=; removed non-functional <nop>UserListByPhotograph |

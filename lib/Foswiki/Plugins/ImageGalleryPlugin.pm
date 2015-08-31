@@ -18,8 +18,8 @@ use strict;
 use warnings;
 
 # =========================
-our $VERSION = '7.00';
-our $RELEASE = '7.00';
+our $VERSION = '7.01';
+our $RELEASE = '31 Aug 2015';
 our $NO_PREFS_IN_TOPIC = 1;
 our $SHORTDESCRIPTION = 'Displays image gallery with auto-generated thumbnails from attachments';
 our $isInitialized;
@@ -75,7 +75,7 @@ sub renderImageGalleryPlaceholder {
 sub postRenderingHandler {
   # my $text = shift;
 
-  $_[0] =~ s/${TranslationToken}IMAGEGALLERY{(.*?)}$TranslationToken/renderImageGallery($1)/ge;
+  $_[0] =~ s/${TranslationToken}IMAGEGALLERY\{(.*?)\}$TranslationToken/renderImageGallery($1)/ge;
 }
 
 # =========================
