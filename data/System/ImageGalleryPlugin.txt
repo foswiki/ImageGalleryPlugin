@@ -60,7 +60,7 @@ that both take the following arguments:
           (default: $comment ($imgnr/$nrimgs)) |
 | thumbtitle  | html format of a thumbnail title; "off" will hide the thumbnail's title %BR% \
           (default: $comment) |
-| sort | set the initial order of the images, can be name, date, size or comment (default:date) |
+| sort | set the initial order of the images, can be name, date, size, topic or comment (default:date) |
 | reverse | invert the initial order of the images, can be on or off (default:off) |
 
 Note, that only =topic= is meaningful to %<nop>NRIMAGES%.
