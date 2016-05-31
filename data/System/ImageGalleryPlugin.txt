@@ -62,6 +62,7 @@ that both take the following arguments:
           (default: $comment) |
 | sort | set the initial order of the images, can be name, date, size or comment (default:date) |
 | reverse | invert the initial order of the images, can be on or off (default:off) |
+| class | add an additional css class attribute to the image gallery wrapper; might be used to add additional features such as in =%<nop>IMAGEGALLERY{class="jqPhotoSwipe jqMasonry"}%= |
 
 Note, that only =topic= is meaningful to %<nop>NRIMAGES%.
 
@@ -165,7 +166,9 @@ Note, that the $comment variable will only display =&lt;comment&gt;= , that is w
 
 ---++ Change History
 %TABLE{columnwidths="7em" tablewidth="100%"}%
-|  27 May 2016 | added support for Foswiki:Extensions/JQPhotoSwipeContrib and Foswiki:Extensions/AngularSkin; improved support for Foswiki:Extensions/LazyLoadPlugin |
+|  27 May 2016 | added support for Foswiki:Extensions/JQPhotoSwipeContrib and Foswiki:Extensions/AngularSkin; \
+                 improved support for Foswiki:Extensions/LazyLoadPlugin ;
+                 fixed =frontend= parameter; added =class= parameter |
 |  31 Aug 2015 | fixing deprecated unescaped left brace in regexes |
 |  16 Dec 2014 | add support for svg, tiff, xcf and psd |
 |  28 Aug 2014 | only render the first frame of a gif animation generating thumbnails; fix orientation of thumbnail as specified in the EXIF metadata |
@@ -181,7 +184,7 @@ Note, that the $comment variable will only display =&lt;comment&gt;= , that is w
 |  14 Nov 2008 | made format string for galleries more flexible |
 |  16 Jul 2008 | don't crash on images that start with a digits pattern |
 |  07 Jul 2008 | fixing use of string as hash |
-|  03 Jul 2008 | applying patch by Aurélio A. Heckert (see Bugs:Item5753); \
+|  03 Jul 2008 | applying patch by Aurelio A. Heckert (see Bugs:Item5753); \
                  using =Resize= instead of =Scale= for higher quality thumbnails; \
                  hiding reddot when the user has no edit access to the target topic |
 |  03 Mar 2008 | make implementation of image mage configurable, \
@@ -224,6 +227,6 @@ Note, that the $comment variable will only display =&lt;comment&gt;= , that is w
 %META:FIELD{name="License" title="License" value="GPL ([[http://www.gnu.org/copyleft/gpl.html][GNU General Public License]])"}%
 %META:FIELD{name="Home" title="Home" value="Foswiki:Extensions/%25TOPIC%25"}%
 %META:FIELD{name="Support" title="Support" value="Foswiki:Support/%25TOPIC%25"}%
-%META:FILEATTACHMENT{name="wintermountains.jpg" attachment="wintermountains.jpg" attr="" date="1464689922" size="33553" stream="IO::File=GLOB(0x9825730)" tmpFilename="/var/tmp/CGItemp48379" user="ProjectContributor" version="1"}%
-%META:FILEATTACHMENT{name="wave.jpg" attachment="wave.jpg" attr="" date="1464689922" size="17585" stream="IO::File=GLOB(0x981a770)" tmpFilename="/var/tmp/CGItemp54049" user="ProjectContributor" version="1"}%
-%META:FILEATTACHMENT{name="cascade.jpg" attachment="cascade.jpg" attr="" date="1464689922" size="31390" stream="IO::File=GLOB(0x9819a0c)" tmpFilename="/var/tmp/CGItemp56780" user="ProjectContributor" version="1"}%
+%META:FILEATTACHMENT{name="wintermountains.jpg" attachment="wintermountains.jpg" attr="" date="1464689922" size="33553" user="ProjectContributor" version="1"}%
+%META:FILEATTACHMENT{name="wave.jpg" attachment="wave.jpg" attr="" date="1464689922" size="17585" user="ProjectContributor" version="1"}%
+%META:FILEATTACHMENT{name="cascade.jpg" attachment="cascade.jpg" attr="" date="1464689922" size="31390" user="ProjectContributor" version="1"}%
