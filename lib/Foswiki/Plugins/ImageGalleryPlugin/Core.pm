@@ -22,6 +22,7 @@ use warnings;
 
 use Foswiki::Func ();
 use Foswiki::Plugins ();
+use Foswiki::Plugins::JQueryPlugin ();
 use constant TRACE => 0; # toggle me
 our %imageSuffixes;
 
@@ -34,15 +35,6 @@ sub new {
   $web =~ s/\//\./go;
 
   # init
-
-  # Graphics::Magick is less buggy than Image::Magick
-  my $impl = 
-    $Foswiki::cfg{ImageGalleryPlugin}{Impl} || 
-    $Foswiki::cfg{ImagePlugin}{Impl} || 'Image::Magick'; 
-
-  eval "use $impl";
-  die $@ if $@;
-  $this->{mage} = new $impl;
 
   $this->{id} = $id;
   $this->{session} = $Foswiki::Plugins::SESSION;
@@ -58,7 +50,7 @@ sub new {
   $this->{pubUrlPath} = Foswiki::Func::getPubUrlPath();
   $this->{foswikiWebName} = $Foswiki::cfg{SystemWebName};
 
-  my $defaultThumbSizes = $Foswiki::cfg{ImageGalleryPlugin}{ThumbSizes} || {};
+  my $defaultThumbSizes = $Foswiki::cfg{ImageGalleryPlugin}{ThumbSizes} // {};
   # get predefined thumbnail sizes
   $this->{thumbSizes} = {
     thin => '25x25',
@@ -106,6 +98,32 @@ sub new {
 }
 
 # =========================
+sub finishCore {
+  my $this = shift;
+
+  undef $this->{mage};
+}
+
+# =========================
+sub mage {
+  my $this = shift;
+
+  unless ($this->{mage}) {
+    my $impl =
+         $Foswiki::cfg{ImageGalleryPlugin}{Impl}
+      || $Foswiki::cfg{ImagePlugin}{Impl}
+      || 'Image::Magick';
+
+    writeDebug("creating new image mage using $impl");
+    eval "require $impl";
+    die $@ if $@;
+    $this->{mage} = $impl->new();
+  }
+
+  return $this->{mage};
+}
+
+# =========================
 # test if a file is an image
 sub isImage {
   my ($this, $attachment) = @_;
@@ -130,7 +148,7 @@ sub init {
   # read attributes
   $this->{size} = $params->{size};
   $this->{size} = 'medium' unless defined $this->{size};
-  my $thumbsize = $this->{thumbSizes}{$this->{size}} || $this->{size};
+  my $thumbsize = $this->{thumbSizes}{$this->{size}} // $this->{size};
   my $thumbwidth = 95;
   my $thumbheight = 95;
   if ($thumbsize =~ /^(\d+)x(\d+)$/) {
@@ -170,23 +188,23 @@ sub init {
   #writeDebug("topics=" . join(", ", @{$this->{topics}}));
 
 
-  $this->{columns} = $params->{columns} || 4;
+  $this->{columns} = $params->{columns} // 4;
 
-  $this->{doDocRels} = $params->{docrels} || 1;
+  $this->{doDocRels} = $params->{docrels} // 1;
   $this->{doDocRels} = ($this->{doDocRels} eq "off")?0:1;
-  $this->{maxheight} = $params->{maxheight} || 480;
-  $this->{maxwidth} = $params->{maxwidth} || 640;
-  $this->{minheight} = $params->{minheight} || 0;
+  $this->{maxheight} = $params->{maxheight} // 480;
+  $this->{maxwidth} = $params->{maxwidth} // 640;
+  $this->{minheight} = $params->{minheight} // 0;
   $this->{minheight} = $this->{maxheight} if $this->{minheight} > $this->{maxheight};
-  $this->{minwidth} = $params->{minwidth} || 0;
+  $this->{minwidth} = $params->{minwidth} // 0;
   $this->{minwidth} = $this->{maxwidth} if $this->{minwidth} > $this->{maxwidth};
   $this->{format} = $params->{format};
-  $this->{frontend} = $params->{frontend};
+  $this->{frontend} = $params->{frontend} // 'default';
   $this->{header} = $params->{header};
   $this->{footer} = $params->{footer};
-  $this->{title} = $params->{title} || ' $comment ($imgnr/$nrimgs)';
+  $this->{title} = $params->{title} // ' $comment ($imgnr/$nrimgs)';
   $this->{doTitles} = ($this->{title} eq 'off')?0:1;
-  $this->{thumbtitle} = $params->{thumbtitle} || ' $comment';
+  $this->{thumbtitle} = $params->{thumbtitle} // ' $comment';
   $this->{doThumbTitles} = ($this->{thumbtitle} eq 'on')?1:0;
   $this->{titles} = $params->{titles};
   if ($this->{titles}) {
@@ -198,29 +216,27 @@ sub init {
   $this->{warn} = 'no images found' unless defined $this->{warn};
   $this->{warn} = '' if $this->{warn} eq 'off';
 
-  $this->{limit} = $params->{limit} || 0;
-  $this->{skip} = $params->{skip} || 0;
+  $this->{limit} = $params->{limit} // 0;
+  $this->{skip} = $params->{skip} // 0;
 
-  my $refresh = $this->{query}->param("refresh") || '';
+  my $refresh = $this->{query}->param("refresh") // '';
   $this->{doRefresh} = ($refresh =~ /on|img/)?1:0;
 
-  $this->{include} = $params->{include} || '';
-  $this->{exclude} = $params->{exclude} || '';
-  $this->{field} = $params->{field} || 'name';
+  $this->{include} = $params->{include} // '';
+  $this->{exclude} = $params->{exclude} // '';
+  $this->{field} = $params->{field} // 'name';
 
   if ($this->{field} !~ /^(name|comment)$/) {
     $this->{field} = 'name';
   }
 
-  $this->{sort} = $params->{sort} || 'name';
+  $this->{sort} = $params->{sort} // 'name';
   $this->{sort} = 'date' unless $this->{sort} =~ /^date|name|comment|size$/;
 
-  $this->{reverse} = $params->{rev} || $params->{reverse} || 'off';
+  $this->{reverse} = $params->{rev} // $params->{reverse} // 'off';
   $this->{reverse} = 'off' unless $this->{reverse} =~ /^on|off$/;
 
-  unless (defined $this->{frontend}) {
-    $this->{frontend} = (Foswiki::Func::getContext()->{JQueryPluginEnabled})?'lightbox':'default';
-  }
+  $this->{class} = $params->{class} // '';
 
   return 1;
 }
@@ -275,34 +291,35 @@ sub render {
 
   # get filename query string
   my $filename = $this->{query}->param("filename");
-  my $id = $this->{query}->param("id") || '';
+  my $id = $this->{query}->param("id") // '';
   my $context = Foswiki::Func::getContext();
-  my $class = 'igp';
 
-  if ($context->{'LazyLoadPluginEnabled'}) {
-    Foswiki::Plugins::JQueryPlugin::createPlugin("lazyload");
-    $result .= "\2<div class='jqLazyLoad'>"; # SMELL
-  }
+  my @class = ('igp');
+  push @class, $this->{class} if $this->{class};
 
-  if ($this->{frontend} eq 'lightbox') {
-    require Foswiki::Plugins::JQueryPlugin;
+  if ($this->{frontend} =~ /^(default|lightbox|prettyphoto|slimbox|photoswipe)$/) {
+    push @class, "jqLightbox";
 
-    if ($context->{'PrettyPhotoEnabled'} || $context->{'PrettyPhotoRegistered'}) {
+    if ($this->{frontend} =~ /^(default|lightbox|photoswipe)$/ && $context->{'PhotoSwipeRegistered'}) {
+      Foswiki::Plugins::JQueryPlugin::createPlugin('photoswipe');
+      push @class, 'jqPhotoSwipe';
+    } elsif ($this->{frontend} =~ /^(default|lightbox|prettyphoto)$/ && $context->{'PrettyPhotoRegistered'}) {
       Foswiki::Plugins::JQueryPlugin::createPlugin('prettyphoto');
-      $class .= ' jqPrettyPhoto';
+      push @class, 'jqPrettyPhoto';
     } else {
-      $class .= ' jqSlimbox ';
+      push @class, 'jqSlimbox ';
       Foswiki::Plugins::JQueryPlugin::createPlugin('slimbox');
     }
-
-    $this->{header} = "<noautolink><div class=\"$class {itemSelector:'.igpThumbNail', singleMode:true}\" id='igp$this->{id}'>\n";
+    my $class = join(" ", @class);
+    $this->{header} = "<noautolink><div class='$class' data-item-selector='.igpThumbNail' data-single-mode='true' id='igp$this->{id}'>\n";
     $this->{footer} = "<span class='foswikiClear'></span></div></noautolink>";
-    $this->{format} = "<a href='\$imageurl' class='igpThumbNail {origUrl:\"\$origurl\"}' style='width:".$this->{thumbwidth}."px; height:".$this->{thumbheight}."px;' title='\$comment'><img src='\$thumburl' alt='\$comment' /></a>"
+    $this->{format} = "<a href='\$origurl' class='igpThumbNail' data-orig-width='\$origwidth' data-orig-height='\$origheight' style='width:".$this->{thumbwidth}."px; height:".$this->{thumbheight}."px;' title='\$comment'><img src='\$thumburl' alt='\$comment' /></a>"
       unless defined $this->{format};
     $result .= $this->renderFormatted();
   } elsif ($this->{format}) {
     $result .= $this->renderFormatted();
   } else {
+    my $class = join(" ", @class);
     $result .= "<div class='$class'><a name='igp$this->{id}'></a>";
     if ($id eq $this->{id} && $filename) {
       # picture mode
@@ -315,11 +332,12 @@ sub render {
     $result = '<noautolink>'.$result.'</noautolink>';
   }
 
-  if ($context->{'LazyLoadPluginEnabled'}) {
-    $result .= "</div>\2"; # SMELL
-  }
-
   $this->writeInfo();
+
+  if ($context->{'LazyLoadPluginEnabled'}) {
+    Foswiki::Plugins::JQueryPlugin::createPlugin("lazyload");
+    $result = '%STARTLAZYLOAD%'.$result.'%ENDLAZYLOAD%';
+  }
 
   #writeDebug("result=$result");
   return Foswiki::Func::expandCommonVariables($result);
@@ -361,12 +379,12 @@ sub renderImage {
   if ($this->{doDocRels}) {
     $result .=
       "<link rel='parent' href='".
-       $this->{session}->getScriptUrl(0, 'view', $this->{web}, $this->{topic}).
+       getScriptUrlPath($this->{web}, $this->{topic}, 'view').
       "' title='Thumbnails' />\n";
     if ($firstImg && $firstImg->{name} ne $filename) {
       $result .=
         "<link rel='first' href='".
-        $this->{session}->getScriptUrl(0, 'view', $this->{web}, $this->{topic},
+        getScriptUrlPath($this->{web}, $this->{topic}, 'view',
           'id'=>$this->{id},
           'filename'=>$firstImg->{name},
           '#'=>"igp$this->{id}"
@@ -375,7 +393,7 @@ sub renderImage {
     if ($lastImg && $lastImg->{name} ne $filename) {
       $result .=
           "<link rel='last' href='".
-          $this->{session}->getScriptUrl(0, 'view', $this->{web}, $this->{topic},
+          getScriptUrlPath($this->{web}, $this->{topic}, 'view',
             'id'=>$this->{id},
             'filename'=>$lastImg->{name},
             '#'=>"igp$this->{id}"
@@ -384,7 +402,7 @@ sub renderImage {
     if ($nextImg && $nextImg->{name} ne $filename) {
       $result .=
           "<link rel='next' href='".
-          $this->{session}->getScriptUrl(0, 'view', $this->{web}, $this->{topic},
+          getScriptUrlPath($this->{web}, $this->{topic}, 'view',
             'id'=>$this->{id},
             'filename'=>$nextImg->{name},
             '#'=>"igp$this->{id}"
@@ -393,7 +411,7 @@ sub renderImage {
     if ($prevImg && $prevImg->{name} ne $filename) {
       $result .=
         "<link rel='previous' href='".
-        $this->{session}->getScriptUrl(0, 'view', $this->{web}, $this->{topic},
+        getScriptUrlPath($this->{web}, $this->{topic}, 'view',
           'id'=>$this->{id},
           'filename'=>$prevImg->{name},
           '#'=>"igp$this->{id}"
@@ -429,7 +447,7 @@ sub renderImage {
 
   if ($firstImg && $firstImg->{name} ne $filename) {
     $result .= "<a class='igpNaviFirst' title='go to first' href='".
-    $this->{session}->getScriptUrl(0, 'view', $this->{web}, $this->{topic},
+    getScriptUrlPath($this->{web}, $this->{topic}, 'view',
       'id'=>$this->{id},
       'filename'=>$firstImg->{name},
       '#'=>"igp$this->{id}"
@@ -439,7 +457,7 @@ sub renderImage {
   }
   if ($prevImg) {
     $result .= "<a class='igpNaviPrev' title='go to previous' href='".
-    $this->{session}->getScriptUrl(0, 'view', $this->{web}, $this->{topic},
+    getScriptUrlPath($this->{web}, $this->{topic}, 'view',
       'id'=>$this->{id},
       'filename'=>$prevImg->{name},
       '#'=>"igp$this->{id}"
@@ -449,7 +467,7 @@ sub renderImage {
   }
   if ($nextImg) {
     $result .= "<a class='igpNaviNext' title='go to next' href='".
-    $this->{session}->getScriptUrl(0, 'view', $this->{web}, $this->{topic},
+    getScriptUrlPath($this->{web}, $this->{topic}, 'view',
       'id'=>$this->{id},
       'filename'=>$nextImg->{name},
       '#'=>"igp$this->{id}"
@@ -459,7 +477,7 @@ sub renderImage {
   }
   if ($lastImg && $lastImg->{name} ne $filename) {
     $result .= "<a class='igpNaviLast' title='go to last' href='".
-    $this->{session}->getScriptUrl(0, 'view', $this->{web}, $this->{topic},
+    getScriptUrlPath($this->{web}, $this->{topic}, 'view',
       'id'=>$this->{id},
       'filename'=>$lastImg->{name},
       '#'=>"igp$this->{id}"
@@ -468,7 +486,7 @@ sub renderImage {
     $result .= "<span class='igpNaviLast igpNaviDisabled '><span>last</span></span>";
   }
   $result .= "<a class='igpNaviDone' href='".
-    $this->{session}->getScriptUrl(0, 'view', $this->{web},$this->{topic}, "#"=>"igp$this->{id}").
+    getScriptUrlPath($this->{web},$this->{topic}, 'view', "#"=>"igp$this->{id}").
     "'><span>done</span></a>";
 
   $result .= "<br clear='both' /></td></tr>\n</table>\n";
@@ -487,9 +505,9 @@ sub renderFormatted {
   }
 
   my $maxCols = $this->{columns};
-  my $header = $this->{header} || '';
-  my $footer = $this->{footer} || '';
-  my $format = $this->{format} || '   * $imageurl';
+  my $header = $this->{header} // '';
+  my $footer = $this->{footer} // '';
+  my $format = $this->{format} // '   * $imageurl';
   my $separator = $this->{separator};
 
   $separator = "\n" unless defined $separator;
@@ -551,7 +569,7 @@ sub renderThumbnails {
       . "<table class='igpThumbNail' cellspacing='0' cellpadding='0'"
       . "style='width:".($this->{thumbwidth}+15)."px; height:".($this->{thumbheight}+15)."px;'>"
       . "<tr><td >"
-      . "<a href='".Foswiki::Func::getViewUrl($this->{web}, $this->{topic})
+      . "<a href='".getScriptUrlPath($this->{web}, $this->{topic}, 'view')
       . "?id=$this->{id}&filename=$image->{name}#igp$this->{id}' "
       . ">"
       . "<img src='$this->{imagesPubUrl}/thumb_$image->{name}"
@@ -620,7 +638,7 @@ sub getImages {
       next if $this->{exclude} && $image->{$this->{field}} =~ /$this->{exclude}/;
       next if $this->{include} && $image->{$this->{field}} !~ /$this->{include}/;
       
-      my $size = $image->{size} || 0;
+      my $size = $image->{size} // 0;
       $image->{IGP_comment} = getImageTitle($image);
       $image->{IGP_sizeK} = sprintf("%dk", $size / 1024);
       $image->{IGP_topic} = $theTopic;
@@ -723,13 +741,13 @@ sub computeImageSize {
     writeDebug("found cached info");
     $image->{IGP_origwidth} = $entry->{origwidth};
     $image->{IGP_origheight} = $entry->{origheight};
-    
+
   } else {
     
     # compute
     writeDebug("consulting image mage on $image->{IGP_filename}");
     ($image->{IGP_origwidth}, $image->{IGP_origheight}, undef, undef) = 
-      $this->{mage}->Ping($image->{IGP_filename});
+      $this->mage->Ping($image->{IGP_filename});
 
     $image->{IGP_origwidth} ||= $this->{thumbwidth};
     $image->{IGP_origheight} ||= $this->{thumbheight};
@@ -888,7 +906,7 @@ sub processImage {
   my $source = $image->{IGP_filename};
   $source .= '[0]' if $source =~ /\.gif$/i; # extract the first frame only
 
-  my $error = $this->{mage}->Read($source);
+  my $error = $this->mage->Read($source);
   #writeDebug("done read");
   if ($error =~ /(\d+)/) {
     #writeDebug("Read(): error=$error");
@@ -899,12 +917,12 @@ sub processImage {
   # compute
   if ($thumbMode) {
     $error = 
-      $this->{mage}->Resize(geometry=>"$image->{IGP_thumbwidth}x$image->{IGP_thumbheight}")." ".
-      $this->{mage}->Crop(width=>$this->{thumbwidth}, height=>$this->{thumbheight})." ".
-      $this->{mage}->Set(page=>"0x0+0+0");
+      $this->mage->Resize(geometry=>"$image->{IGP_thumbwidth}x$image->{IGP_thumbheight}")." ".
+      $this->mage->Crop(width=>$this->{thumbwidth}, height=>$this->{thumbheight})." ".
+      $this->mage->Set(page=>"0x0+0+0");
   } else {
     $error = 
-      $this->{mage}->Resize(geometry=>"$image->{IGP_width}x$image->{IGP_height}");
+      $this->mage->Resize(geometry=>"$image->{IGP_width}x$image->{IGP_height}");
   }
   if ($error =~ /(\d+):/) {
     #writeDebug("Transform(): error=$error");
@@ -913,7 +931,7 @@ sub processImage {
   }
 
   # auto orient
-  $error = $this->{mage}->AutoOrient();
+  $error = $this->mage->AutoOrient();
   if ($error =~ /(\d+)/) {
     $this->{errorMsg} = $error;
     writeDebug("Error: $error");
@@ -921,7 +939,7 @@ sub processImage {
   }
 
   # strip of profiles and comments
-  $error = $this->{mage}->Strip();
+  $error = $this->mage->Strip();
   if ($error =~ /(\d+)/) {
     $this->{errorMsg} = $error;
     writeDebug("Error: $error");
@@ -930,7 +948,7 @@ sub processImage {
 
   # write
   #writeDebug("mage->write($target)");
-  $error = $this->{mage}->Write($target);
+  $error = $this->mage->Write($target);
   #writeDebug("done mage->write()");
   if ($error =~ /(\d+)/) {
     #writeDebug("Write(): error=$error");
@@ -941,8 +959,9 @@ sub processImage {
   #writeDebug("writing target '$target'");
 
   # forget
-  my $mage = $this->{mage};
+  my $mage = $this->mage;
   @$mage = ();
+
   #writeDebug("done createImage()");
   return 1;
 }
@@ -951,7 +970,7 @@ sub processImage {
 # stolen form Foswiki::handleTime() 
 sub formatTime {
   my ($time, $format) = @_;
-  $format ||= '$day $mon $year - $hour:$min';
+  $format //= '$day $mon $year - $hour:$min';
   my $value = "";
 
   my ($sec, $min, $hour, $day, $mon, $year) = localtime($time);
@@ -1095,5 +1114,38 @@ sub writeDebug {
   #Foswiki::Func::writeDebug("ImageGalleryPlugin - $_[0]");
   print STDERR "ImageGalleryPlugin - $_[0]\n" if TRACE;
 }
+
+# =========================
+# version compatible with angular
+sub getScriptUrlPath {
+  my ($web, $topic, $script, @params) = @_;
+
+  return Foswiki::Func::getScriptUrlPath($web, $topic, $script) . make_params(@params);
+}
+
+# use & instead of ; to separate url params
+sub make_params {
+
+  my $url = '';
+  my @ps;
+  my $anchor = '';
+
+  while (my $p = shift @_) {
+    if ($p eq '#') {
+      $anchor = '#' . Foswiki::urlEncode(shift(@_));
+    } else {
+      my $v = shift(@_);
+      $v = '' unless defined $v;
+      push(@ps, Foswiki::urlEncode($p) . '=' . Foswiki::urlEncode($v));
+    }
+  }
+
+  if (scalar(@ps)) {
+    $url .= '?' . join('&', @ps);
+  }
+
+  return $url . $anchor;
+}
+
 
 1;

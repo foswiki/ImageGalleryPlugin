@@ -18,7 +18,7 @@ use strict;
 use warnings;
 
 # =========================
-our $VERSION = '7.01';
+our $VERSION = '7.10';
 our $RELEASE = '31 Aug 2015';
 our $NO_PREFS_IN_TOPIC = 1;
 our $SHORTDESCRIPTION = 'Displays image gallery with auto-generated thumbnails from attachments';
@@ -46,11 +46,21 @@ sub initPlugin {
 }
 
 # =========================
+sub finishPlugin {
+
+  foreach my $ipgId (keys %knownGalleries) { 
+    $knownGalleries{$ipgId}{core}->finishCore;
+    undef $knownGalleries{$ipgId};
+  }
+  undef %knownGalleries;
+}
+
+# =========================
 sub doInit {
   return if $isInitialized;
   $isInitialized = 1;
 
-  Foswiki::Func::addToHEAD("IMAGEGALLERYPLUGIN", <<'HERE');
+  Foswiki::Func::addToZone("head", "IMAGEGALLERYPLUGIN", <<'HERE');
 <link rel="stylesheet" href="%PUBURLPATH%/%SYSTEMWEB%/ImageGalleryPlugin/style.css" type="text/css" media="all" />
 HERE
 

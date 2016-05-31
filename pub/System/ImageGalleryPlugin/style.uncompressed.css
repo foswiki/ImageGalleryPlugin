@@ -106,9 +106,7 @@
   background-image:url(cross.png);
 }
 
-.jqMasonry .igpThumbNail,
-.jqPrettyPhoto .igpThumbNail,
-.jqSlimbox .igpThumbNail {
+.jqLightbox .igpThumbNail {
   float:left;
   padding:5px;
   overflow:hidden;
