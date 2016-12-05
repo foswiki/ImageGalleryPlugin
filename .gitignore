@@ -2,10 +2,10 @@
 *.swp
 igp_*
 pub/System/ImageGalleryPlugin/style.css
-ImageGalleryPlugin.md5
-ImageGalleryPlugin.sha1
-ImageGalleryPlugin.tgz
-ImageGalleryPlugin.txt
-ImageGalleryPlugin.zip
-ImageGalleryPlugin_installer
-ImageGalleryPlugin_installer.pl
+/ImageGalleryPlugin.md5
+/ImageGalleryPlugin.sha1
+/ImageGalleryPlugin.tgz
+/ImageGalleryPlugin.txt
+/ImageGalleryPlugin.zip
+/ImageGalleryPlugin_installer
+/ImageGalleryPlugin_installer.pl

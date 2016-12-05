@@ -13,6 +13,10 @@ $Foswiki::cfg{ImageGalleryPlugin}{ThumbSizes} = {
 };
 
 # **STRING**
+# Default thumbnail size to be used when no size parameter is specified to the %IMAGEGALLERY macro
+$Foswiki::cfg{ImageGalleryPlugin}{DefaultSize} = 'large';
+
+# **STRING**
 # A pattern of filetype suffixes to be excluded from imagegalleries even though they are 
 # valid images
 $Foswiki::cfg{ImageGalleryPlugin}{ExcludeSuffix} = 'psd';

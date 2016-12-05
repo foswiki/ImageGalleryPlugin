@@ -1,4 +1,4 @@
-%META:TOPICINFO{author="ProjectContributor" comment="" date="1464689922" format="1.1"  version="1"}%
+%META:TOPICINFO{author="ProjectContributor" comment="" date="1480692417" format="1.1" version="1"}%
 ---+!! <nop>ImageGalleryPlugin
 %FORMFIELD{"Description"}%
 
@@ -166,8 +166,9 @@ Note, that the $comment variable will only display =&lt;comment&gt;= , that is w
 
 ---++ Change History
 %TABLE{columnwidths="7em" tablewidth="100%"}%
+|  05 Dec 2016 | added option ={DefaultSize}= |
 |  27 May 2016 | added support for Foswiki:Extensions/JQPhotoSwipeContrib and Foswiki:Extensions/AngularSkin; \
-                 improved support for Foswiki:Extensions/LazyLoadPlugin ;
+                 improved support for Foswiki:Extensions/LazyLoadPlugin; \
                  fixed =frontend= parameter; added =class= parameter |
 |  31 Aug 2015 | fixing deprecated unescaped left brace in regexes |
 |  16 Dec 2014 | add support for svg, tiff, xcf and psd |

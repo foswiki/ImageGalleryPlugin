@@ -30,12 +30,12 @@ our %imageSuffixes;
 # constructor
 sub new {
   my ($class, $id, $topic, $web) = @_;
+
   my $this = bless({}, $class);
 
   $web =~ s/\//\./go;
 
   # init
-
   $this->{id} = $id;
   $this->{session} = $Foswiki::Plugins::SESSION;
   $this->{query} = Foswiki::Func::getCgiQuery();
@@ -49,6 +49,7 @@ sub new {
   $this->{imagesDir} = $this->{pubDir}.'/images';
   $this->{pubUrlPath} = Foswiki::Func::getPubUrlPath();
   $this->{foswikiWebName} = $Foswiki::cfg{SystemWebName};
+  $this->{defaultSize} = $Foswiki::cfg{ImageGalleryPlugin}{DefaultSize} // "medium";
 
   my $defaultThumbSizes = $Foswiki::cfg{ImageGalleryPlugin}{ThumbSizes} // {};
   # get predefined thumbnail sizes
@@ -147,7 +148,7 @@ sub init {
 
   # read attributes
   $this->{size} = $params->{size};
-  $this->{size} = 'medium' unless defined $this->{size};
+  $this->{size} = $this->{defaultSize} unless defined $this->{size};
   my $thumbsize = $this->{thumbSizes}{$this->{size}} // $this->{size};
   my $thumbwidth = 95;
   my $thumbheight = 95;
