@@ -17,7 +17,7 @@ package Foswiki::Plugins::ImageGalleryPlugin;
 use strict;
 use warnings;
 
-our $VERSION = '8.00';
+our $VERSION = '8.01';
 our $RELEASE = '27 Jul 2017';
 our $NO_PREFS_IN_TOPIC = 1;
 our $SHORTDESCRIPTION = 'Displays image gallery with auto-generated thumbnails from attachments';

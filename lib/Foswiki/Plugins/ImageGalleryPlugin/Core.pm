@@ -72,7 +72,6 @@ sub handleIMAGEGALLERY {
   $params->{header} //= '<noautolink><div class="$class clearfix" data-item-selector=".imageSimple">';
   $params->{footer} //= '</div></noautolink>';
   $params->{separator} //= '';
-  $params->{columns} //= 0;
   $params->{limit} //= 0;
   $params->{skip} //= 0;
   $params->{filter} //= '';
@@ -89,7 +88,7 @@ sub handleIMAGEGALLERY {
   my $context = Foswiki::Func::getContext();
 
   # get best frontend
-  unless(defined $params->{frontend}) {
+  if (!defined($params->{frontend}) || $params->{frontend} eq 'default') {
     foreach my $frontend (qw(PhotoSwipe PrettyPhoto Slimbox)) {
       if ($context->{$frontend."Registered"}) {
         $params->{frontend} = lc($frontend);
@@ -135,7 +134,6 @@ sub handleIMAGEGALLERY {
     $line =~ s/\$tooltip/$params->{tooltip}/g;
     $line =~ s/\$title/$title/g;
     $line =~ s/\$filter/$params->{filter}/g;
-    $line .= '%CLEAR%' if $params->{columns} && $index % $params->{columns} == 0;
     push @result, $line;
     last if $params->{limit} && $index >= $params->{limit};
   }

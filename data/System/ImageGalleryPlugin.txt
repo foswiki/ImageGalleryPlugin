@@ -22,42 +22,22 @@ below).
 ---++ Syntax
 =%<nop>IMAGEGALLERY{...}%=
 
-| *Argument* | *Description* |
-| topic | comma separated list of topics whose attachments should be displayed %BR% \
-          (default: the current topic) |
-| limit | maximum number of images to display (default: 0, meaning no limit). |
-| include | regular expression an image must match to be part of the gallery |
-| exclude | regular expression an image must _not_ match to be part of the gallery |
-| frontend | select gallery interface, possible values are =default=, =slimbox=, =prettyphoto=, =photoswipe= and =html=; NOTE, specifying a frontend disables the =format= parameter (see below for an explanation) |
-| field | specify which property of the image has to match using =include= or =exclude=; \
-          possible values: name, comment (default: name) |
-| size | the thumbnail size, the actual geometries of a size can be configured below; \
-         possible values: tiny, small, medium, large, huge  \
-         (default: medium) |
-| columns | number of thumbnails to be displayed in one row of the gallery %BR% \
-            (default: 4) |
-| docrels | flag to disable/enable document relations between images; \
-         possible values are on, off, 0, 1 (default: on) |
-| maxwidth | maximal display width of an image; images are scaled not to exceed this limit \
-          while preserving aspect ratio %BR% \
-          (default: 640) |
-| maxheight | maximal display height of an image %BR% (default: 480) |
-| minwidth | minimal display width of an image; images are scaled not to fall below this \
-            limit while preserving aspect ratio %BR% (default: 0) |
-| minheight | minimal display height of an image %BR% (default: 0) |
-| header | header part of the gallery; only used if there is a =format= |
-| format | html format of an image %BR% \
-          (default: &lt;a href="$origurl"&gt;&lt;img src="$imageurl" title="$comment" width="$width" height="$height"/&gt;&lt;/a&gt;) |
-| footer | footer part of the gallery; only used if there is a =format= |
-| titles | toggles image and thumnail titles on and off %BR% \
-          (default: off) |
-| title | html format of an image title; "off" will hide the image's title %BR% \
-          (default: $comment ($imgnr/$nrimgs)) |
-| thumbtitle  | html format of a thumbnail title; "off" will hide the thumbnail's title %BR% \
-          (default: $comment) |
-| sort | set the initial order of the images, can be name, date, size or comment (default:date) |
-| reverse | invert the initial order of the images, can be on or off (default:off) |
-| class | add an additional css class attribute to the image gallery wrapper; might be used to add additional features such as in =%<nop>IMAGEGALLERY{class="jqPhotoSwipe jqMasonry"}%= |
+| *Argument* | *Description* | *Default* |
+| topic | comma separated list of topics whose attachments should be displayed | current topic |
+| class | add an additional css class attribute to the image gallery wrapper | =igp= + class depending on the =frontend= and =layout= being used |
+| exclude | regular expression an image must _not_ match to be part of the gallery | |
+| field | specify which property of the image has to match using =include= or =exclude=; possible values: name, comment (default: name) |
+| footer | footer part of the gallery | =/lt;/div>= |
+| format | format of an image | %<nop>IMAGE{"$name" topic="$web.$topic" align="left" size="$size" crop="$crop" caption="$title" tooltip="$tooltip" filter="$filter"}%= |
+| frontend | select gallery interface, possible values are =default=, =slimbox=, =prettyphoto=, =photoswipe= | photoswipe, prettyphoto or slimbox (in the given prioirty) |
+| header | header part of the gallery | =&lt;div class="$class clearfix" data-item-selector=".imageSimple"&gt;= |
+| include | regular expression an image must match to be part of the gallery | |
+| layout | thumbnail layout algorithm, can be either =packery= (using Foswiki:Extensions/JQPackeryContrib) or =masonry= or undefined | |
+| limit | maximum number of images to display | 0, meaning no limit | 
+| reverse | invert the initial order of the images, can be on or off | off |
+| size | the thumbnail size, the actual geometries of a size can be configured below; possible values: tiny, small, medium, large, huge  (default: medium) |
+| sort | set the initial order of the images, can be name, date, size or comment | date |
+| titles | toggles image and thumnail titles on and off | off |
 
 ---+++ Frontends
 
@@ -70,9 +50,7 @@ The =frontend= parameter specifies which user interface to use to display the li
 
 Without any =frontend= or =format= parameter specified will the system use the best interface available.
 
----+++ Variables
-The parameters "format", "title" and "thumbtitle" can use the following variables to
-refer to image properties:
+---+++ Format variables
 
 | *Variable* | *Description* |
 | $web | the web the image is located |
