@@ -1,4 +1,4 @@
-%META:TOPICINFO{author="ProjectContributor" comment="" date="1480692417" format="1.1" version="1"}%
+%META:TOPICINFO{author="micha" comment="" date="1480947478" format="1.1" version="6"}%
 ---+!! <nop>ImageGalleryPlugin
 %FORMFIELD{"Description"}%
 
@@ -18,14 +18,9 @@ below).
 
 ---++ Example
 %IMAGEGALLERY{size="large" exclude="logo"}%
-<span class="foswikiAlert">%NRIMAGES{exclude="logo"}%</span> images found.
 
 ---++ Syntax
----+++ Arguments
-This plugin introduces two tags:
-   * %<nop>IMAGEGALLERY{...}%: render an image gallery
-   * %<nop>NRIMAGES%: returns the number of images attachted to a (list of) topics
-that both take the following arguments:
+=%<nop>IMAGEGALLERY{...}%=
 
 | *Argument* | *Description* |
 | topic | comma separated list of topics whose attachments should be displayed %BR% \
@@ -64,8 +59,6 @@ that both take the following arguments:
 | reverse | invert the initial order of the images, can be on or off (default:off) |
 | class | add an additional css class attribute to the image gallery wrapper; might be used to add additional features such as in =%<nop>IMAGEGALLERY{class="jqPhotoSwipe jqMasonry"}%= |
 
-Note, that only =topic= is meaningful to %<nop>NRIMAGES%.
-
 ---+++ Frontends
 
 The =frontend= parameter specifies which user interface to use to display the lightbox in the browser:
@@ -74,7 +67,6 @@ The =frontend= parameter specifies which user interface to use to display the li
    * =photoswipe=: you need to install [[Foswiki:Extensions/JQPhotoSwipeContrib][JQPhotoSwipeContrib]] to use this interface
    * =prettyphoto=: you need to install [[Foswiki:Extensions/JQPrettyPhotoContrib][JQPrettyPhotoContrib]] to use this interface
    * =slimbox=: this is a default lightbox interface shipped with Foswiki
-   * =html=: use an html interface to render the gallery without using any javascript frontend; NOTE: this works best with [[Foswiki:Extensions/AngularSkin][AngularSkin]]/[[Foswiki:Extensions/AngularSkin][AngularPlugin]] to still render the gallery as a single-page application
 
 Without any =frontend= or =format= parameter specified will the system use the best interface available.
 
@@ -114,35 +106,8 @@ The IGP will check for certain query parameters in the url. These are:
 Each IMAGEGALLERY has an anchor, namely a &lt;a name="igp&lt;n&gt;"/&gt;, that
 is used to scroll the display appropriately.
 
----++ Customization
-First of all this plugin should come with reasonable default values, so that
-you will get a nice image gallery (with regards to my taste) right on.
-There are several things that are customizable:
-   * customize a gallery using a compination of the arguments described above
-   * add custom cascading styles in a topic to format the gallery
-   * alter the default cascading styles in the [[%ATTACHURL%/style.css][style.css]]
-     file attached to this topic
-   * customize the plugin settings below
-
----+++ Cascading Stylesheets
-The plugin emits the following css classes (see the comments in the [[%ATTACHURL%/style.css][style.css]] file):
-
-<noautolink>
-| *Class* | *Description* |
-| igp | division for the complete output of the image gallery |
-| igpThumbNails | division of all thumbnails |
-| igpThumbNailsTable | table of thumbnail images |
-| igpThumbNail | table cell of one thumbnail image |
-| igpThumbNailTitle | table cell of the thumbnail title |
-| igpPictureTable | table of the display image and the navigation bar |
-| igpPicture | table cell of the display image |
-| igpPictureTitle | division of the title of the display image |
-| igpNavigation | table cell of the navigation bar |
-| igpRedDot | span surrounding the red dot |
-| igpAlert | span surrounding error messages |
-</noautolink>
-
 ---+++ Adjusting the image sequence
+
 By default the image gallery will display images in the order that they where uploaded.
 This determines their _natural_ order. When you want to change this order you can
 prefix the comment of the attachment with a sequence number. For example: given a
@@ -152,9 +117,11 @@ will put the image at the desired position. Sequence numbers don't necessarily n
 to be unique, that is if there's another picture with a comment like 
 "12 <nop>- My new bike" then the natural order of the both is relevant. In general,
 a picture will be put at position =&lt;nr&gt;= if its attachment comment has the format
+
 <verbatim>
   <nr><space>-<space><comment>
 </verbatim>
+
 Note, that the $comment variable will only display =&lt;comment&gt;= , that is with 
 =&lt;nr&gt;&lt;space&gt;-&lt;space&gt;= stripped off.
 
@@ -166,6 +133,10 @@ Note, that the $comment variable will only display =&lt;comment&gt;= , that is w
 
 ---++ Change History
 %TABLE{columnwidths="7em" tablewidth="100%"}%
+|  27 Jul 2017 | massive rewrite using Foswiki:Extensions/ImagePlugin as a backend now; \
+                 removed <nop>NRIMAGES macro; \
+                 oo-ified implementation; \
+                 added support for various frontends implementing a lightshow preview, for now photoswipe, prettyphoto and slimbox |
 |  05 Dec 2016 | added option ={DefaultSize}= |
 |  27 May 2016 | added support for Foswiki:Extensions/JQPhotoSwipeContrib and Foswiki:Extensions/AngularSkin; \
                  improved support for Foswiki:Extensions/LazyLoadPlugin; \
@@ -180,7 +151,7 @@ Note, that the $comment variable will only display =&lt;comment&gt;= , that is w
 |  03 Jul 2009 | shipping minified and compressed css files now |
 |  24 Apr 2009 | converted to foswiki plugin |
 |  12 Feb 2009 | interface improvements; creating more accurate thumbnails |
-|  31 Jan 2009 | added VarIMAGEGALLERY and VarNRIMAGES documentation topics |
+|  31 Jan 2009 | added VarIMAGEGALLERY and <nop>VarNRIMAGES documentation topics |
 |  29 Dec 2008 | temporary fix to work under Foswiki |
 |  14 Nov 2008 | made format string for galleries more flexible |
 |  16 Jul 2008 | don't crash on images that start with a digits pattern |
@@ -224,7 +195,7 @@ Note, that the $comment variable will only display =&lt;comment&gt;= , that is w
 %META:FIELD{name="Release" title="Release" value="%25$RELEASE%25"}%
 %META:FIELD{name="Description" title="Description" value="%25$SHORTDESCRIPTION%25"}%
 %META:FIELD{name="Repository" title="Repository" value="https://github.com/foswiki/%25TOPIC%25"}%
-%META:FIELD{name="Copyright" title="Copyright" value="2002-2009, Will Norris; 2005-2016, Michael Daum http://michaeldaumconsulting.com"}%
+%META:FIELD{name="Copyright" title="Copyright" value="2002-2009, Will Norris; 2005-2017, Michael Daum http://michaeldaumconsulting.com"}%
 %META:FIELD{name="License" title="License" value="GPL ([[http://www.gnu.org/copyleft/gpl.html][GNU General Public License]])"}%
 %META:FIELD{name="Home" title="Home" value="Foswiki:Extensions/%25TOPIC%25"}%
 %META:FIELD{name="Support" title="Support" value="Foswiki:Support/%25TOPIC%25"}%

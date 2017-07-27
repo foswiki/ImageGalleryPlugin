@@ -1,5 +1,5 @@
 # Copyright (C) 2002-2009 Will Norris. All Rights Reserved. (wbniv@saneasylumstudios.com)
-# Copyright (C) 2005-2014 Michael Daum http://michaeldaumconsulting.com
+# Copyright (C) 2005-2017 Michael Daum http://michaeldaumconsulting.com
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -12,105 +12,46 @@
 # GNU General Public License for more details, published at 
 # http://www.gnu.org/copyleft/gpl.html
 #
-# =========================
+
 package Foswiki::Plugins::ImageGalleryPlugin;
 use strict;
 use warnings;
 
-# =========================
-our $VERSION = '7.20';
-our $RELEASE = '05 Dec 2015';
+our $VERSION = '8.00';
+our $RELEASE = '27 Jul 2017';
 our $NO_PREFS_IN_TOPIC = 1;
 our $SHORTDESCRIPTION = 'Displays image gallery with auto-generated thumbnails from attachments';
-our $isInitialized;
-our $igpId;
-our $TranslationToken = "\2\3\2"; # SMELL arbitrary but may clash with other plugin's transtoks
-our %knownGalleries;
+our $core;
 
-# =========================
+###############################################################################
 sub initPlugin {
   #my ($topic, $web, $user, $installWeb) = @_;
 
-  if ($Foswiki::Plugins::VERSION < 1) {
-    &Foswiki::Func::writeWarning("Version mismatch between ImageGalleryPlugin and Plugins.pm");
-    return 0;
-  }
-  $igpId = 0;
-  $isInitialized = 0;
-  %knownGalleries = ();
+  $core = undef;
 
-  Foswiki::Func::registerTagHandler('IMAGEGALLERY', \&renderImageGalleryPlaceholder);
-  Foswiki::Func::registerTagHandler('NRIMAGES', \&renderNrImages);
+  Foswiki::Func::registerTagHandler('IMAGEGALLERY', sub {
+    getCore()->handleIMAGEGALLERY(@_);
+  });
 
   return 1;
 }
 
-# =========================
+###############################################################################
 sub finishPlugin {
 
-  foreach my $ipgId (keys %knownGalleries) { 
-    $knownGalleries{$ipgId}{core}->finishCore;
-    undef $knownGalleries{$ipgId};
+  $core->finish() if defined $core;
+  #undef $core; # EXPERIMENTAL: keep it in memory
+}
+
+###############################################################################
+sub getCore {
+
+  unless (defined $core) {
+    require Foswiki::Plugins::ImageGalleryPlugin::Core;
+    $core = Foswiki::Plugins::ImageGalleryPlugin::Core->new(@_);
   }
-  undef %knownGalleries;
-}
 
-# =========================
-sub doInit {
-  return if $isInitialized;
-  $isInitialized = 1;
-
-  Foswiki::Func::addToZone("head", "IMAGEGALLERYPLUGIN", <<'HERE');
-<link rel="stylesheet" href="%PUBURLPATH%/%SYSTEMWEB%/ImageGalleryPlugin/style.css" type="text/css" media="all" />
-HERE
-
-  require Foswiki::Plugins::ImageGalleryPlugin::Core;
-}
-
-# =========================
-sub renderImageGalleryPlaceholder {
-  my ($session, $params, $theTopic, $theWeb) = @_;
-
-  doInit();
-
-  $igpId++;
-  $knownGalleries{$igpId} = {
-    core => Foswiki::Plugins::ImageGalleryPlugin::Core->new($igpId, $theTopic, $theWeb),
-    params => $params
-  };
-  return $TranslationToken.'IMAGEGALLERY{'.$igpId.'}'.$TranslationToken;
-}
-
-# =========================
-sub postRenderingHandler {
-  # my $text = shift;
-
-  $_[0] =~ s/${TranslationToken}IMAGEGALLERY\{(.*?)\}$TranslationToken/renderImageGallery($1)/ge;
-}
-
-# =========================
-sub renderImageGallery {
-  my $igpId = shift;
-
-  my $igp = $knownGalleries{$igpId};
-  return '' unless $igp;
-
-  return $igp->{core}->render($igp->{params});
-}
-
-
-# =========================
-sub renderNrImages {
-  my ($session, $params, $theTopic, $theWeb) = @_;
-
-  doInit();
-
-  my $igp = Foswiki::Plugins::ImageGalleryPlugin::Core->new(undef, $theTopic, $theWeb);
-  if ($igp->init($params)) {
-    return scalar @{$igp->getImages()};
-  } else {
-    return Foswiki::Plugins::ImageGalleryPlugin::Core::renderError("can't initialize");
-  }
+  return $core;
 }
 
 1;

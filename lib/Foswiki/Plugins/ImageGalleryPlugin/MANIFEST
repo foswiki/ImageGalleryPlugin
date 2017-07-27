@@ -1,8 +1,9 @@
+!noci
 data/System/ImageGalleryPlugin.txt 0644
 data/System/VarIMAGEGALLERY.txt 0644
-data/System/VarNRIMAGES.txt 0644
 lib/Foswiki/Plugins/ImageGalleryPlugin/Config.spec 0644
 lib/Foswiki/Plugins/ImageGalleryPlugin/Core.pm 0644
+lib/Foswiki/Plugins/ImageGalleryPlugin/DEPENDENCIES 0644
 lib/Foswiki/Plugins/ImageGalleryPlugin.pm 0644
 pub/System/ImageGalleryPlugin/cascade.jpg 0644
 pub/System/ImageGalleryPlugin/control-end-gray.png 0644

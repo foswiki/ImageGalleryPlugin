@@ -6,4 +6,4 @@
    * Syntax: =%<nop>IMAGEGALLERY{"topic" <i>options...</i>}%=
    * Examples:
       * =%<nop>IMAGEGALLERY{"%SYSTEMWEB%.DocumentGraphics" columns="3" limit="12" exclude="arrow" sort="name"}%
-   * Related: [[#VarNRIMAGES][NRIMAGES]], ImageGalleryPlugin
+   * Related: ImageGalleryPlugin
