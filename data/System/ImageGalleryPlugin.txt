@@ -32,12 +32,14 @@ below).
 | frontend | select gallery interface, possible values are =default=, =slimbox=, =prettyphoto=, =photoswipe= | photoswipe, prettyphoto or slimbox (in the given prioirty) |
 | header | header part of the gallery | =&lt;div class="$class clearfix" data-item-selector=".imageSimple"&gt;= |
 | include | regular expression an image must match to be part of the gallery | |
+| showhidden | boolean flag to include images that are hidden; set to off to hide hidden images | on |
 | layout | thumbnail layout algorithm, can be either =packery= (using Foswiki:Extensions/JQPackeryContrib) or =masonry= or undefined | |
 | limit | maximum number of images to display | 0, meaning no limit | 
 | reverse | invert the initial order of the images, can be on or off | off |
 | size | the thumbnail size, the actual geometries of a size can be configured below; possible values: tiny, small, medium, large, huge  (default: medium) |
 | sort | set the initial order of the images, can be name, date, size or comment | date |
 | titles | toggles image and thumnail titles on and off | off |
+| warn | toogles display of error messages, i.e. when no image was found | on |
 
 ---+++ Frontends
 
@@ -111,6 +113,8 @@ Note, that the $comment variable will only display =&lt;comment&gt;= , that is w
 
 ---++ Change History
 %TABLE{columnwidths="7em" tablewidth="100%"}%
+|  26 Oct 2020 | added support for native lazy loading of images; \
+                 added =showhidden= parameter to exclude hidden images from the gallery |
 |  27 Jul 2017 | massive rewrite using Foswiki:Extensions/ImagePlugin as a backend now; \
                  removed <nop>NRIMAGES macro; \
                  oo-ified implementation; \
@@ -158,8 +162,8 @@ Note, that the $comment variable will only display =&lt;comment&gt;= , that is w
                  added refresh query parameter to recompute images |
 |  09 May 2005 | fixed errors reported by Marcel Trap; \
                  added support for multiple topics (proposed by Martin Cleaver; \
-                 added %<nop>NRIMAGES% tag |
-|  &nbsp;      | fix error when called from within rename view |
+                 added %<nop>NRIMAGES% tag; \
+                 fix error when called from within rename view |
 |  03 May 2005 | fixed thumbnail resizing; reintroduced =titles= parameter;  \
                  support for multiple galleries per topic |
 |  27 Apr 2005 | complete rewrite |
@@ -173,7 +177,7 @@ Note, that the $comment variable will only display =&lt;comment&gt;= , that is w
 %META:FIELD{name="Release" title="Release" value="%25$RELEASE%25"}%
 %META:FIELD{name="Description" title="Description" value="%25$SHORTDESCRIPTION%25"}%
 %META:FIELD{name="Repository" title="Repository" value="https://github.com/foswiki/%25TOPIC%25"}%
-%META:FIELD{name="Copyright" title="Copyright" value="2002-2009, Will Norris; 2005-2017, Michael Daum http://michaeldaumconsulting.com"}%
+%META:FIELD{name="Copyright" title="Copyright" value="&copy; 2002-2009, Will Norris, 2005-2020, Michael Daum"}%
 %META:FIELD{name="License" title="License" value="GPL ([[http://www.gnu.org/copyleft/gpl.html][GNU General Public License]])"}%
 %META:FIELD{name="Home" title="Home" value="Foswiki:Extensions/%25TOPIC%25"}%
 %META:FIELD{name="Support" title="Support" value="Foswiki:Support/%25TOPIC%25"}%

@@ -1,7 +1,7 @@
 # Plugin for Foswiki - The Free and Open Source Wiki, http://foswiki.org/
 #
 # Copyright (C) 2002-2009 Will Norris. All Rights Reserved. (wbniv@saneasylumstudios.com)
-# Copyright (C) 2005-2017 Michael Daum http://michaeldaumconsulting.com
+# Copyright (C) 2005-2020 Michael Daum http://michaeldaumconsulting.com
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -67,14 +67,14 @@ sub handleIMAGEGALLERY {
   $params->{crop} //= "on";
   $params->{tooltip} = Foswiki::Func::isTrue($params->{tooltip} // "off", 0)?"on":"off";
   $params->{titles} = Foswiki::Func::isTrue($params->{titles} // "off", 0);
-  $params->{lazyload} = Foswiki::Func::isTrue($params->{lazyload} // "on", 1);
-  $params->{format} //= '%IMAGE{"$name" topic="$web.$topic" align="left" size="$size" crop="$crop" caption="$title" tooltip="$tooltip" filter="$filter"}%';
+  $params->{format} //= '%IMAGE{"$name" topic="$web.$topic" align="left" size="$size" crop="$crop" caption="$title" tooltip="$tooltip" filter="$filter" lazyload="on"}%';
   $params->{header} //= '<noautolink><div class="$class clearfix" data-item-selector=".imageSimple">';
   $params->{footer} //= '</div></noautolink>';
   $params->{separator} //= '';
   $params->{limit} //= 0;
   $params->{skip} //= 0;
   $params->{filter} //= '';
+  $params->{showhidden} //= 'on';
 
   $params->{filter} = '' if $params->{filter} eq 'none';
 
@@ -150,11 +150,6 @@ sub handleIMAGEGALLERY {
 
   $this->addToZone();
 
-  if ($params->{lazyload} && $context->{'LazyLoadPluginEnabled'}) {
-    Foswiki::Plugins::JQueryPlugin::createPlugin("lazyload");
-    $result = '%STARTLAZYLOAD%'.$result.'%ENDLAZYLOAD%';
-  }
-
   return Foswiki::Func::decodeFormatTokens($result);
 }
 
@@ -193,9 +188,10 @@ sub getImages {
     }
 
     foreach my $attachment ($meta->find('FILEATTACHMENT')) {
-      next unless $this->isImage($attachment->{name});
+      next if $params->{showhidden} ne 'on' && $attachment->{attr} =~ /h/;
       next if $params->{exclude} && $attachment->{$params->{field}} =~ /$params->{exclude}/;
       next if $params->{include} && $attachment->{$params->{field}} !~ /$params->{include}/;
+      next unless $this->isImage($attachment->{name});
       push @images, {
         web => $theWeb,
         topic => $theTopic,
