@@ -1,2 +1,2 @@
-Foswiki::Plugins::ImagePlugin,>=8.00,perl,Required
+Foswiki::Plugins::ImagePlugin,>=10.00,perl,Required
 Foswiki::Plugins::JQueryPlugin,>=3.74,perl,Optional
