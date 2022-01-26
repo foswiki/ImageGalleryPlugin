@@ -3,4 +3,27 @@
   margin:0;
   padding:0;
 }
-
+.igp * {
+  overflow:hidden;
+}
+.igp img {
+  transition: transform 500ms ease-out, transform-origin 500ms ease-out, filter 500ms ease-out;
+}
+.igp.zoomInImages img:hover {
+  transform:scale(1.2);
+}
+.igp.zoomOutImages img {
+  transform:scale(1.1);
+}
+.igp.zoomOutImages img:hover {
+  transform:scale(1);
+}
+.igp.brightenImages img {
+  filter: brightness(.8);
+}
+.igp.brightenImages img:hover {
+  filter: brightness(1);
+}
+.igp.darkenImages img:hover {
+  filter: brightness(.8);
+}

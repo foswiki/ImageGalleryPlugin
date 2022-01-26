@@ -24,7 +24,7 @@ below).
 
 | *Argument* | *Description* | *Default* |
 | topic | comma separated list of topics whose attachments should be displayed | current topic |
-| class | add an additional css class attribute to the image gallery wrapper | =igp= + class depending on the =frontend= and =layout= being used |
+| class | add an additional css class attribute to the image gallery wrapper | =igp= + class depending on the =frontend= and =layout= being used; there are a few special classes that add a hover effect to the images: =zoomInImages=, =zoomOutImages=, =brightenImages=, =darkenImages= |
 | exclude | regular expression an image must _not_ match to be part of the gallery | |
 | field | specify which property of the image has to match using =include= or =exclude=; possible values: name, comment (default: name) |
 | footer | footer part of the gallery | =/lt;/div>= |

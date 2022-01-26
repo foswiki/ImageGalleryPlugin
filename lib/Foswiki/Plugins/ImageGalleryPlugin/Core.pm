@@ -1,7 +1,7 @@
 # Plugin for Foswiki - The Free and Open Source Wiki, http://foswiki.org/
 #
 # Copyright (C) 2002-2009 Will Norris. All Rights Reserved. (wbniv@saneasylumstudios.com)
-# Copyright (C) 2005-2020 Michael Daum http://michaeldaumconsulting.com
+# Copyright (C) 2005-2021 Michael Daum http://michaeldaumconsulting.com
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -67,7 +67,7 @@ sub handleIMAGEGALLERY {
   $params->{crop} //= "on";
   $params->{tooltip} = Foswiki::Func::isTrue($params->{tooltip} // "off", 0)?"on":"off";
   $params->{titles} = Foswiki::Func::isTrue($params->{titles} // "off", 0);
-  $params->{format} //= '%IMAGE{"$name" topic="$web.$topic" align="left" size="$size" crop="$crop" caption="$title" tooltip="$tooltip" filter="$filter" lazyload="on"}%';
+  $params->{format} //= '%IMAGE{"$name" topic="$web.$topic" align="left" size="$size" crop="$crop" caption="$title" tooltip="$tooltip" filter="$filter" lazyload="on" style="$style"}%';
   $params->{header} //= '<noautolink><div class="$class clearfix" data-item-selector=".imageSimple">';
   $params->{footer} //= '</div></noautolink>';
   $params->{separator} //= '';
@@ -75,6 +75,7 @@ sub handleIMAGEGALLERY {
   $params->{skip} //= 0;
   $params->{filter} //= '';
   $params->{showhidden} //= 'on';
+  $params->{style} //= '';
 
   $params->{filter} = '' if $params->{filter} eq 'none';
 
@@ -134,6 +135,7 @@ sub handleIMAGEGALLERY {
     $line =~ s/\$tooltip/$params->{tooltip}/g;
     $line =~ s/\$title/$title/g;
     $line =~ s/\$filter/$params->{filter}/g;
+    $line =~ s/\$style/$params->{style}/g;
     push @result, $line;
     last if $params->{limit} && $index >= $params->{limit};
   }
@@ -221,8 +223,9 @@ sub isImage {
 
   my $mimeType = $this->getMimeType($file);
   my $isImage = $mimeType =~ /^image\//?1:0;
+  $isImage = 1 if $mimeType =~ /^application\/pdf$/;
 
-  #_writeDebug("isImage($file), mimeType=$mimeType, isImage=$isImage");
+  _writeDebug("isImage($file), mimeType=$mimeType, isImage=$isImage");
 
   return $isImage;
 }
@@ -239,7 +242,7 @@ sub getMimeType {
     return "" if $this->{excludeSuffix} && $suffix =~ /^(?:$this->{excludeSuffix})$/i; # ignore these
 
     unless (defined $this->{types}) {
-      $this->{types} = join("\n", grep {/^image\//} split(/\n/, Foswiki::Func::readFile($Foswiki::cfg{MimeTypesFileName})));
+      $this->{types} = join("\n", split(/\n/, Foswiki::Func::readFile($Foswiki::cfg{MimeTypesFileName})));
     }
 
     if ($this->{types} =~ /^([^#]\S*).*?\s$suffix(?:\s|$)/im) {
