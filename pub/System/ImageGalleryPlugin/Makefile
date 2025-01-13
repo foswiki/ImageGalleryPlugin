@@ -1,5 +1,4 @@
 FOSWIKI_ROOT?=~/foswiki/trunk/core
-TARGET= \
-  style.css
+TARGET= build/igp.css build/igp.js
 
 -include $(FOSWIKI_ROOT)/pub/System/JQueryPlugin/Makefile.include

@@ -1,7 +1,7 @@
 # Plugin for Foswiki - The Free and Open Source Wiki, http://foswiki.org/
 #
 # Copyright (C) 2002-2009 Will Norris. All Rights Reserved. (wbniv@saneasylumstudios.com)
-# Copyright (C) 2005-2021 Michael Daum http://michaeldaumconsulting.com
+# Copyright (C) 2005-2025 Michael Daum http://michaeldaumconsulting.com
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -21,6 +21,7 @@ use strict;
 use warnings;
 
 use Foswiki::Func ();
+use JSON ();
 
 use constant TRACE => 0; # toggle me
 
@@ -59,6 +60,9 @@ sub finish {
 sub handleIMAGEGALLERY {
   my ($this, $session, $params, $topic, $web) = @_;
 
+  # serialize early to prevent using below defaults
+  my $data = '<literal><script class="igpParams" type="text/json">{'.$this->toHtml5Data($params).'}</script></literal>';
+
   $params->{field} //= 'name';
   $params->{sort} //= 'name';
   $params->{reverse} //= 'off';
@@ -67,9 +71,9 @@ sub handleIMAGEGALLERY {
   $params->{crop} //= "on";
   $params->{tooltip} = Foswiki::Func::isTrue($params->{tooltip} // "off", 0)?"on":"off";
   $params->{titles} = Foswiki::Func::isTrue($params->{titles} // "off", 0);
-  $params->{format} //= '%IMAGE{"$name" topic="$web.$topic" align="left" size="$size" crop="$crop" caption="$title" tooltip="$tooltip" filter="$filter" lazyload="on" style="$style"}%';
-  $params->{header} //= '<noautolink><div class="$class clearfix" data-item-selector=".imageSimple">';
-  $params->{footer} //= '</div></noautolink>';
+  $params->{format} //= '$percntIMAGE{"$name" topic="$web.$topic" align="left" size="$size" crop="$crop" caption="$title" tooltip="$tooltip" filter="$filter" lazyload="on" style="$style"}$percnt';
+  $params->{header} //= '<div class="$class clearfix" data-item-selector=".imageSimple">';
+  $params->{footer} //= '</div>';
   $params->{separator} //= '';
   $params->{limit} //= 0;
   $params->{skip} //= 0;
@@ -97,6 +101,7 @@ sub handleIMAGEGALLERY {
       }
     }
   }
+
 
   Foswiki::Plugins::JQueryPlugin::createPlugin($params->{frontend});
   push @class, 'jqPhotoSwipe' if $params->{frontend} eq 'photoswipe';
@@ -145,27 +150,13 @@ sub handleIMAGEGALLERY {
   my $footer = $params->{footer};
   my $separator = $params->{separator};
 
-  my $result = $header.join($separator, @result).$footer;
-
+  my $result = $header.$data.join($separator, @result).$footer;
   my $class = join(" ", @class);
-  $result =~ s/\$class/$class/g;
+  $result =~ s/\$class\b/$class/g;
 
-  $this->addToZone();
+  Foswiki::Plugins::JQueryPlugin::createPlugin("ImageGallery");
 
   return Foswiki::Func::decodeFormatTokens($result);
-}
-
-
-###############################################################################
-sub addToZone {
-  my $this = shift;
-
-  return if $this->{_doneZone};
-  $this->{_doneZone} = 1;
-
-  Foswiki::Func::addToZone("head", "IMAGEGALLERYPLUGIN", <<'HERE', 'IMAGEPLUGIN');
-<link rel="stylesheet" href="%PUBURLPATH%/%SYSTEMWEB%/ImageGalleryPlugin/style.css" type="text/css" media="all" />
-HERE
 }
 
 ###############################################################################
@@ -251,6 +242,23 @@ sub getMimeType {
   }
 
   return $mimeType;
+}
+
+###############################################################################
+sub toHtml5Data {
+  my ($this, $params) = @_;
+
+  my @data = ();
+  foreach my $key (sort keys %$params) {
+    next if $key =~ /^_/;
+    my $val = $params->{$key};
+    $key =~ s/_/-/g;
+    $val = Foswiki::urlEncode($val);
+
+    push @data, '"'.$key.'": "'.$val.'"';
+  }
+
+  return join(",", @data);
 }
 
 ###############################################################################

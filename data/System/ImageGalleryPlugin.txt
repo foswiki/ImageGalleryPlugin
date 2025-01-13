@@ -1,4 +1,4 @@
-%META:TOPICINFO{author="micha" comment="" date="1480947478" format="1.1" version="6"}%
+%META:TOPICINFO{author="ProjectContributor" comment="" date="1736756052" format="1.1" version="1"}%
 ---+!! <nop>ImageGalleryPlugin
 %FORMFIELD{"Description"}%
 
@@ -45,9 +45,9 @@ below).
 
 The =frontend= parameter specifies which user interface to use to display the lightbox in the browser:
 
-   * =default=: use the best user interface given other extensions installed; it checks for [[Foswiki:Extensions/JQPhotoSwipeContrib][photoswipe]], [[Foswiki:Extensions/JQPrettyPhotoContrib][prettyphoto]], and [[%SYSTEMWEB%.JQuerySlimbox][slimbox]] in the given order and uses the first available on the system
-   * =photoswipe=: you need to install [[Foswiki:Extensions/JQPhotoSwipeContrib][JQPhotoSwipeContrib]] to use this interface
-   * =prettyphoto=: you need to install [[Foswiki:Extensions/JQPrettyPhotoContrib][JQPrettyPhotoContrib]] to use this interface
+   * =default=: use the best user interface given other extensions installed; it checks for [[https://foswiki.org/Extensions/JQPhotoSwipeContrib][photoswipe]], [[https://foswiki.org/Extensions/JQPrettyPhotoContrib][prettyphoto]], and [[%SYSTEMWEB%.JQuerySlimbox][slimbox]] in the given order and uses the first available on the system
+   * =photoswipe=: you need to install [[https://foswiki.org/Extensions/JQPhotoSwipeContrib][JQPhotoSwipeContrib]] to use this interface
+   * =prettyphoto=: you need to install [[https://foswiki.org/Extensions/JQPrettyPhotoContrib][JQPrettyPhotoContrib]] to use this interface
    * =slimbox=: this is a default lightbox interface shipped with Foswiki
 
 Without any =frontend= or =format= parameter specified will the system use the best interface available.
@@ -113,6 +113,7 @@ Note, that the $comment variable will only display =&lt;comment&gt;= , that is w
 
 ---++ Change History
 %TABLE{columnwidths="7em" tablewidth="100%"}%
+|  13 Jan 2025 | fixed handling of html5 parameters; reorganized js and css |
 |  26 Oct 2020 | added support for native lazy loading of images; \
                  added =showhidden= parameter to exclude hidden images from the gallery |
 |  27 Jul 2017 | massive rewrite using Foswiki:Extensions/ImagePlugin as a backend now; \
@@ -177,10 +178,10 @@ Note, that the $comment variable will only display =&lt;comment&gt;= , that is w
 %META:FIELD{name="Release" title="Release" value="%25$RELEASE%25"}%
 %META:FIELD{name="Description" title="Description" value="%25$SHORTDESCRIPTION%25"}%
 %META:FIELD{name="Repository" title="Repository" value="https://github.com/foswiki/%25TOPIC%25"}%
-%META:FIELD{name="Copyright" title="Copyright" value="&copy; 2002-2009, Will Norris, 2005-2020, Michael Daum"}%
+%META:FIELD{name="Copyright" title="Copyright" value="&copy; 2002-2009, Will Norris, 2005-2025, Michael Daum"}%
 %META:FIELD{name="License" title="License" value="GPL ([[http://www.gnu.org/copyleft/gpl.html][GNU General Public License]])"}%
 %META:FIELD{name="Home" title="Home" value="Foswiki:Extensions/%25TOPIC%25"}%
 %META:FIELD{name="Support" title="Support" value="Foswiki:Support/%25TOPIC%25"}%
-%META:FILEATTACHMENT{name="wintermountains.jpg" attachment="wintermountains.jpg" attr="" date="1464689922" size="33553" user="ProjectContributor" version="1"}%
-%META:FILEATTACHMENT{name="wave.jpg" attachment="wave.jpg" attr="" date="1464689922" size="17585" user="ProjectContributor" version="1"}%
-%META:FILEATTACHMENT{name="cascade.jpg" attachment="cascade.jpg" attr="" date="1464689922" size="31390" user="ProjectContributor" version="1"}%
+%META:FILEATTACHMENT{name="wintermountains.jpg" attachment="wintermountains.jpg" attr="" date="1736756052" size="33553" user="ProjectContributor" version="1"}%
+%META:FILEATTACHMENT{name="wave.jpg" attachment="wave.jpg" attr="" date="1736756052" size="17585" user="ProjectContributor" version="1"}%
+%META:FILEATTACHMENT{name="cascade.jpg" attachment="cascade.jpg" attr="" date="1736756052" size="31390" user="ProjectContributor" version="1"}%
