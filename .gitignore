@@ -2,7 +2,7 @@
 *.swp
 igp_*
 attic
-pub/System/ImageGalleryPlugin/style.css
+pub/System/ImageGalleryPlugin/build
 /ImageGalleryPlugin.md5
 /ImageGalleryPlugin.sha1
 /ImageGalleryPlugin.tgz

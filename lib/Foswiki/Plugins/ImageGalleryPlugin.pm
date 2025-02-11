@@ -22,7 +22,7 @@ use Foswiki::Plugins::JQueryPlugin ();
 use Foswiki::Plugins::RenderPlugin ();
 use Foswiki::Func();
 
-our $VERSION = '9.00';
+our $VERSION = '9.10';
 our $RELEASE = '%$RELEASE%';
 our $NO_PREFS_IN_TOPIC = 1;
 our $SHORTDESCRIPTION = 'Displays image gallery with auto-generated thumbnails from attachments';

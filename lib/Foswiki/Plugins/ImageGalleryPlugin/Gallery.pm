@@ -44,7 +44,7 @@ sub new {
 
   my $this = bless($class->SUPER::new( 
     $session,
-    name => 'Image',
+    name => 'ImageGallery',
     version => $Foswiki::Plugins::ImageGalleryPlugin::VERSION,
     author => 'Michael Daum',
     homepage => 'http://foswiki.org/Extensions/ImageGalleryPlugin',
@@ -58,6 +58,3 @@ sub new {
 }
 
 1;
-
-
-

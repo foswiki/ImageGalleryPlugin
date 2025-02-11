@@ -1,4 +1,4 @@
-%META:TOPICINFO{author="ProjectContributor" comment="" date="1736756052" format="1.1" version="1"}%
+%META:TOPICINFO{author="ProjectContributor" comment="" date="1739283095" format="1.1" version="1"}%
 ---+!! <nop>ImageGalleryPlugin
 %FORMFIELD{"Description"}%
 
@@ -113,6 +113,7 @@ Note, that the $comment variable will only display =&lt;comment&gt;= , that is w
 
 ---++ Change History
 %TABLE{columnwidths="7em" tablewidth="100%"}%
+|  11 Feb 2025 | fixed wrong name of jQuery module clashing with <nop>ImagePlugin |
 |  13 Jan 2025 | fixed handling of html5 parameters; reorganized js and css |
 |  26 Oct 2020 | added support for native lazy loading of images; \
                  added =showhidden= parameter to exclude hidden images from the gallery |
@@ -182,6 +183,6 @@ Note, that the $comment variable will only display =&lt;comment&gt;= , that is w
 %META:FIELD{name="License" title="License" value="GPL ([[http://www.gnu.org/copyleft/gpl.html][GNU General Public License]])"}%
 %META:FIELD{name="Home" title="Home" value="Foswiki:Extensions/%25TOPIC%25"}%
 %META:FIELD{name="Support" title="Support" value="Foswiki:Support/%25TOPIC%25"}%
-%META:FILEATTACHMENT{name="wintermountains.jpg" attachment="wintermountains.jpg" attr="" date="1736756052" size="33553" user="ProjectContributor" version="1"}%
-%META:FILEATTACHMENT{name="wave.jpg" attachment="wave.jpg" attr="" date="1736756052" size="17585" user="ProjectContributor" version="1"}%
-%META:FILEATTACHMENT{name="cascade.jpg" attachment="cascade.jpg" attr="" date="1736756052" size="31390" user="ProjectContributor" version="1"}%
+%META:FILEATTACHMENT{name="wintermountains.jpg" attachment="wintermountains.jpg" attr="" date="1739283095" size="33553" user="ProjectContributor" version="1"}%
+%META:FILEATTACHMENT{name="wave.jpg" attachment="wave.jpg" attr="" date="1739283095" size="17585" user="ProjectContributor" version="1"}%
+%META:FILEATTACHMENT{name="cascade.jpg" attachment="cascade.jpg" attr="" date="1739283095" size="31390" user="ProjectContributor" version="1"}%
