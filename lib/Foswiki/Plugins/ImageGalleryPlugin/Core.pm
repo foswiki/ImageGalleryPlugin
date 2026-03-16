@@ -1,7 +1,7 @@
 # Plugin for Foswiki - The Free and Open Source Wiki, http://foswiki.org/
 #
 # Copyright (C) 2002-2009 Will Norris. All Rights Reserved. (wbniv@saneasylumstudios.com)
-# Copyright (C) 2005-2025 Michael Daum http://michaeldaumconsulting.com
+# Copyright (C) 2005-2026 Michael Daum http://michaeldaumconsulting.com
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -21,6 +21,7 @@ use strict;
 use warnings;
 
 use Foswiki::Func ();
+use Foswiki::Plugins::JQueryPlugin ();
 use JSON ();
 
 use constant TRACE => 0; # toggle me
@@ -69,9 +70,10 @@ sub handleIMAGEGALLERY {
   $params->{size} //= $this->{defaultSize};
   $params->{warn} = Foswiki::Func::isTrue($params->{warn} // "on", 1);
   $params->{crop} //= "on";
+  $params->{zoom} = Foswiki::Func::isTrue($params->{zoom} // "off", 0) ? "on" : "off";
   $params->{tooltip} = Foswiki::Func::isTrue($params->{tooltip} // "off", 0)?"on":"off";
   $params->{titles} = Foswiki::Func::isTrue($params->{titles} // "off", 0);
-  $params->{format} //= '$percntIMAGE{"$name" topic="$web.$topic" align="left" size="$size" crop="$crop" caption="$title" tooltip="$tooltip" filter="$filter" lazyload="on" style="$style"}$percnt';
+  $params->{format} //= '$percntIMAGE{"$name" topic="$web.$topic" align="left" size="$size" zoom="$zoom" crop="$crop" caption="$title" tooltip="$tooltip" filter="$filter" lazyload="on" style="$style"}$percnt';
   $params->{header} //= '<div class="$class clearfix" data-item-selector=".imageSimple">';
   $params->{footer} //= '</div>';
   $params->{separator} //= '';
@@ -137,6 +139,7 @@ sub handleIMAGEGALLERY {
     $line =~ s/\$topic/$image->{topic}/g;
     $line =~ s/\$size/$params->{size}/g;
     $line =~ s/\$crop/$params->{crop}/g;
+    $line =~ s/\$zoom/$params->{zoom}/g;
     $line =~ s/\$tooltip/$params->{tooltip}/g;
     $line =~ s/\$title/$title/g;
     $line =~ s/\$filter/$params->{filter}/g;
@@ -155,6 +158,11 @@ sub handleIMAGEGALLERY {
   $result =~ s/\$class\b/$class/g;
 
   Foswiki::Plugins::JQueryPlugin::createPlugin("ImageGallery");
+
+  if ($context->{'LazyLoadPluginEnabled'}) {
+    Foswiki::Plugins::JQueryPlugin::createPlugin("lazyload");
+    $result = '%STARTLAZYLOAD%'.$result.'%ENDLAZYLOAD%';
+  }
 
   return Foswiki::Func::decodeFormatTokens($result);
 }

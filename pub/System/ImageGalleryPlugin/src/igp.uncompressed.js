@@ -1,7 +1,7 @@
 /*
  * ImageGalleryPlugin
  *
- * Copyright (c) 2024-2025 Michael Daum https://michaeldaumconsulting.com
+ * Copyright (c) 2024-2026 Michael Daum https://michaeldaumconsulting.com
  *
  * Licensed under the GPL licenses http://www.gnu.org/licenses/gpl.html
  *
@@ -25,15 +25,32 @@
       ev.stopPropagation();
     });
 
-    if (typeof(foswiki.eventClient) !== 'undefined') {
-      foswiki.eventClient.bind("upload", function(msg) {
-        self.load();
-      });
-      foswiki.eventClient.bind("moveAttachment", function(msg) {
-        self.load();
-      });
-    }
+    self.initEvents();
   }
+
+  ImageGallery.prototype.initEvents = function() {
+    var self = this;
+
+    if (self._initedEvents) {
+      return;
+    }
+
+    if (!foswiki.eventClient) {
+      $(document).one("eventClient", function() {
+        self.initEvents();
+      });
+      return;
+    }
+
+    self._initedEvents = true;
+
+    foswiki.eventClient.bind("upload", function(msg) {
+      self.load();
+    });
+    foswiki.eventClient.bind("moveAttachment", function(msg) {
+      self.load();
+    });
+  };
 
   ImageGallery.prototype.getParams = function() {
     var self = this;

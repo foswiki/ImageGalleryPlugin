@@ -1,4 +1,4 @@
-%META:TOPICINFO{author="ProjectContributor" comment="" date="1739283095" format="1.1" version="1"}%
+%META:TOPICINFO{author="ProjectContributor" comment="" date="1773673844" format="1.1" version="1"}%
 ---+!! <nop>ImageGalleryPlugin
 %FORMFIELD{"Description"}%
 
@@ -39,7 +39,9 @@ below).
 | size | the thumbnail size, the actual geometries of a size can be configured below; possible values: tiny, small, medium, large, huge  (default: medium) |
 | sort | set the initial order of the images, can be name, date, size or comment | date |
 | titles | toggles image and thumnail titles on and off | off |
-| warn | toogles display of error messages, i.e. when no image was found | on |
+| warn | toggles display of error messages, i.e. when no image was found | on |
+| crop | toggles cropping of thumbnails | on |
+| zoom | toggles enlarging smaller images while generating thumbnails | off |
 
 ---+++ Frontends
 
@@ -179,10 +181,10 @@ Note, that the $comment variable will only display =&lt;comment&gt;= , that is w
 %META:FIELD{name="Release" title="Release" value="%25$RELEASE%25"}%
 %META:FIELD{name="Description" title="Description" value="%25$SHORTDESCRIPTION%25"}%
 %META:FIELD{name="Repository" title="Repository" value="https://github.com/foswiki/%25TOPIC%25"}%
-%META:FIELD{name="Copyright" title="Copyright" value="&copy; 2002-2009, Will Norris, 2005-2025, Michael Daum"}%
+%META:FIELD{name="Copyright" title="Copyright" value="&copy; 2002-2009, Will Norris, 2005-2026, Michael Daum"}%
 %META:FIELD{name="License" title="License" value="GPL ([[http://www.gnu.org/copyleft/gpl.html][GNU General Public License]])"}%
 %META:FIELD{name="Home" title="Home" value="Foswiki:Extensions/%25TOPIC%25"}%
 %META:FIELD{name="Support" title="Support" value="Foswiki:Support/%25TOPIC%25"}%
-%META:FILEATTACHMENT{name="wintermountains.jpg" attachment="wintermountains.jpg" attr="" date="1739283095" size="33553" user="ProjectContributor" version="1"}%
-%META:FILEATTACHMENT{name="wave.jpg" attachment="wave.jpg" attr="" date="1739283095" size="17585" user="ProjectContributor" version="1"}%
-%META:FILEATTACHMENT{name="cascade.jpg" attachment="cascade.jpg" attr="" date="1739283095" size="31390" user="ProjectContributor" version="1"}%
+%META:FILEATTACHMENT{name="wintermountains.jpg" attachment="wintermountains.jpg" attr="" date="1773673844" size="33553" user="ProjectContributor" version="1"}%
+%META:FILEATTACHMENT{name="wave.jpg" attachment="wave.jpg" attr="" date="1773673844" size="17585" user="ProjectContributor" version="1"}%
+%META:FILEATTACHMENT{name="cascade.jpg" attachment="cascade.jpg" attr="" date="1773673844" size="31390" user="ProjectContributor" version="1"}%
